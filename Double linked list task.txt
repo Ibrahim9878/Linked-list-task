@@ -1,0 +1,262 @@
+#include <iostream>
+#include <cassert>
+
+
+using namespace std;
+
+template <typename T>
+class Node
+{
+public:
+	T data;
+	Node<T>* next;
+	Node<T>* prev;
+	Node(T data)
+	{
+		this->data = data;
+		this->next = NULL;
+		this->prev = NULL;
+	}
+};
+
+
+template <typename T>
+class DoubleLinkedList
+{
+	Node<T>* _head;
+	Node<T>* _tail;
+public:
+	// add_front
+	//add_back
+	// pop_front
+	// pop_back
+	// printBack
+	// printFront
+
+	DoubleLinkedList()
+	{
+		_head = NULL;
+		_tail = NULL;
+	}
+
+
+	void Add_back(const T item)
+	{
+		Add_back(new Node<T>(item));
+	}
+
+	void Add_back(Node<T>* item)
+	{
+		if (_head == NULL)
+		{
+			_head = item;
+			_tail = item;
+			return;
+		}
+
+		_tail->next = item;
+		item->prev = _tail;
+		_tail = item;
+	}
+
+	void Add_front(Node<T>* item)
+	{
+		if (_head == NULL)
+		{
+			_head = item;
+			_tail = item;
+			return;
+		}
+
+		Node<T>* temp = _head;
+		_head = item;
+		temp->prev = _head;
+		_head->next = temp;
+		temp = NULL;
+	}
+	void Add_front(const T item)
+	{
+		Add_front(new Node<T>(item));
+	}
+
+	T Pop_back()
+	{
+		if (_tail == NULL) assert(!"Error");
+
+		if (_tail->prev == NULL)
+		{
+			T item = _tail->data;
+			delete _tail;
+			_tail = NULL;
+			_head = NULL;
+			return item;
+		}
+
+		T item = _tail->data;
+		Node<T>* temp = _tail->prev;
+		temp->next = NULL;
+
+		delete _tail;
+		_tail = temp;
+		return item;
+	}
+
+	T Pop_front()
+	{
+		if (_head == NULL) assert(!"Error");
+
+		if (_head->next == NULL)
+		{
+			T item = _head->data;
+			delete _head;
+			_tail = NULL;
+			_head = NULL;
+			return item;
+		}
+		T item = _head->data;
+		Node<T>* temp = _head->next;
+		temp->prev = NULL;
+
+		delete _head;
+		_head = temp;
+		return item;
+	}
+
+	void Print_Back()
+	{
+		if (_head == NULL)
+		{
+			cout << "[]" << endl;
+			return;
+		}
+
+		cout << "[";
+		Node<T>* item = _tail;
+
+		while (item != NULL)
+		{
+			cout << item->data;
+			item = item->prev;
+			if (item != NULL) cout << ",";
+		}
+		cout << "]";
+	}
+
+	void Print_Front()
+	{
+		if (_head == NULL)
+		{
+			cout << "[]" << endl;
+			return;
+		}
+
+		cout << "[";
+		Node<T>* item = _head;
+
+		while (item != NULL)
+		{
+			cout << item->data;
+			item = item->next;
+			if (item != NULL) cout << ",";
+		}
+		cout << "]" << endl;
+	}
+
+	void AddBefore(const T x, const T item)
+	{
+		Node<T>* temp1 = NULL;
+		Node<T>* temp2 = NULL;
+
+		Node<T>* item1 = new Node<T>(item);
+		if (_head == NULL) assert(!"Bele Bir elemnt yoxdur");
+		bool IsCheck = false;
+		Node<T>* a = _head;
+		while (a != NULL)
+		{
+			if (a->data == x)
+			{
+				temp1 = a->prev;
+				temp2 = a;
+				IsCheck = true;
+				break;
+			}
+			a = a->next;
+		}
+		if (!IsCheck) assert(!"Element yoxdur");
+		temp1->next = item1;
+		item1->prev = temp1;
+		temp2->prev = item1;
+		item1->next = temp2;
+	}
+	void addAfter(const T x, const T item)
+	{
+		Node<T>* temp1 = nullptr;
+		Node<T>* temp2 = nullptr;
+		Node<T>* item1 = new Node<T>(item);
+
+		if (_head == NULL) assert(!"Bele bir element yoxudr");
+
+		bool isCheck = false;
+		Node<T>* a = _head;
+
+		while (a != NULL)
+		{
+			if (a->data == x)
+			{
+				temp1 = a;
+				temp2 = a->next;
+				isCheck = true;
+				break;
+			}
+			a = a->next;
+		}
+		if (!isCheck) assert(!"element yoxdur");
+		temp1->next = item1;
+		item1->prev = temp1;
+		temp2->prev = item1;
+		item1->next = temp2;
+		
+	}
+	void deleteItem(const T item)
+	{
+		Node<T>* temp1 = nullptr;
+		Node<T>* temp2 = nullptr;
+		Node<T>* a = _head;
+		bool isCheck = false;
+		while (a != NULL)
+		{
+			if (a->data == item)
+			{
+				temp1 = a->prev;
+				temp2 = a->next;
+				delete a;
+				isCheck = true;
+				break;
+			}
+			a = a->next;
+		}
+		temp1->next = temp2;
+		temp2->prev = temp1;
+		if (!isCheck)
+		assert(!"element taplmadi");
+
+	}
+};
+
+
+
+
+
+int main()
+{
+	DoubleLinkedList<string> list;
+	list.Add_back("1");
+	list.Add_back("2");
+	list.Add_back("3");
+	list.Add_back("4");
+
+	list.AddBefore("2", "14");
+	list.addAfter("2", "15");
+	list.deleteItem("2");
+	list.Print_Front();
+}

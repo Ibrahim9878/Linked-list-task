@@ -1,0 +1,209 @@
+#include <iostream>
+#include <cassert>
+using namespace std;
+template <typename T>
+class Node
+{
+public:
+	T data;
+	Node<T>* next;
+	Node(T data)
+	{
+		this->data = data;
+		this->next = NULL;
+	}
+};
+template <typename T>
+class SingleLinkedList
+{
+	Node<T>* _head;
+public:
+	SingleLinkedList() { _head = NULL; }
+
+	// add_front
+	// add_back
+	// pop_back
+	// pop_front
+	// Print
+
+	void AddFront(Node<T>* item)
+	{
+		if (_head == NULL)
+		{
+			_head = item;
+			return;
+		}
+
+		Node<T>* temp = _head;
+		_head = item;
+		_head->next = temp;
+		temp = NULL;
+	}
+	void AddFront(T item)
+	{
+		AddFront(new Node<T>(item));
+	}
+	void AddBack(Node<T>* item)
+	{
+		if (_head == NULL)
+		{
+			_head = item;
+			return;
+		}
+		Node<T>* a = _head;
+		while (a->next != NULL)
+		{
+			a = a->next;
+		}
+		a->next = item;
+	}
+	void AddBack(T item)
+	{
+		AddBack(new Node<T>(item));
+	}
+	T PopBack()
+	{
+		if (_head == NULL) assert(!"List is free");
+		if (_head->next == NULL)
+		{
+			T data = _head->data;
+			delete _head;
+			_head = NULL;
+			return data;
+		}
+
+		Node<T>* temp = _head;
+		while (temp->next->next != NULL)
+		{
+			temp = temp->next;
+		}
+		T data = temp->next->data;
+		delete temp->next;
+		temp->next = NULL;
+		return data;
+	}
+	T PopFront()
+	{
+		if (_head == NULL) assert(!"List is free");
+		T data = _head->data;
+		Node<T>* a = _head->next;
+		delete _head;
+		_head = a;
+		return data;
+	}
+
+	void Print()
+	{
+		if (_head == NULL) cout << "[]" << endl;
+		Node<T>* a = _head;
+		cout << "[";
+		while (a != NULL)
+		{
+			cout << a->data;
+			a = a->next;
+			if (a != NULL) cout << ", ";
+		}
+		cout << "]" << endl;
+	}
+
+
+	//AddBefore
+	//AddAfter
+	//deleteItem
+
+	void addBefore(const T x, const T item)
+	{
+		Node<T>* temp1 = NULL;
+		Node<T>* temp2 = NULL;
+
+		Node<T>* item1 = new Node<T>(item);
+		if (_head == NULL) assert(!"Bele Bir elemnt yoxdur");
+		bool IsCheclk = false;
+		Node<T>* a = _head;
+		while (a != NULL)
+		{
+			if (a->next->data == x) 
+			{
+				temp1 = a;
+				temp2 = a->next;
+				IsCheclk = true;
+				break;
+			}
+			
+			a = a->next;
+		}
+		if (!IsCheclk) assert(!"Element yoxdur");
+		temp1->next = item1;
+		item1->next = temp2;
+	}
+	void addAfter(const T x, const T item)
+	{
+		Node<T>* temp1 = nullptr;
+		Node<T>* temp2 = nullptr;
+		Node<T>* item1 = new Node<T>(item);
+
+		if (_head == NULL) assert(!"Bele bir element yoxudr");
+
+		bool isCheck = false;
+		Node<T>* a = _head;
+
+		while (a != NULL)
+		{
+			if (a->data == x)
+			{
+				temp1 = a;
+				temp2 = a->next;
+				isCheck = true;
+				break;
+			}
+			a = a->next;
+		}
+		if (!isCheck) assert(!"element yoxdur");
+
+		temp1->next = item1;
+		item1->next = temp2;
+	}
+	void deleteItem(const T item)
+	{
+		Node<T>* temp1 = nullptr;
+		Node<T>* temp2 = nullptr;
+		Node<T>* a = _head;
+
+
+		bool isCheck = false;
+		while (a != NULL)
+		{
+			if (a->next->data == item)
+			{
+				temp1 = a;
+				temp2 = a->next->next;
+				delete a->next;
+				isCheck = true;
+				break;
+			}
+			a = a->next;			
+		}
+		temp1->next = temp2;
+		if(!isCheck)
+		assert(!"element taplmadi");
+
+	}
+
+};
+int main()
+{
+	SingleLinkedList<string> list;
+
+	list.AddFront("1");
+	list.AddFront("2");
+	list.AddFront("3");
+	list.AddFront("4");
+	list.AddFront("5");
+	list.AddFront("6");
+
+	list.addBefore("3", "7");
+	list.addAfter("7", "34");
+
+	list.deleteItem("5");
+	list.Print();
+}
